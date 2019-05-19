@@ -4,26 +4,30 @@ public interface Fusible {
 
 	/******************************Multiplication******************************/
 	
-	public Reaction multiply(float factor);
-	public Reaction multiply(Catalyst factor);
-	public Reaction multiply(Reaction factor);
+	public Fusion multiply(float factor);
+	public Fusion multiply(Catalyst factor);
+	public Fusion multiply(Fusion factor);
 	
 	/******************************Division******************************/
 
-	public Reaction divideBy(float divisor);
-	public Reaction divideBy(Catalyst divisor);
-	public Reaction divideBy(Reaction divisor);
+	public Fusion divideBy(float divisor);
+	public Fusion divideBy(Catalyst divisor);
+	public Fusion divideBy(Fusion divisor);
 	
 	/******************************Addition******************************/
 
-	public Reaction add(float addend);
-	public Reaction add(Catalyst addend);
-	public Reaction add(Reaction addend);
+	public Fusion add(float addend);
+	public Fusion add(Catalyst addend);
+	public Fusion add(Fusion addend);
 	
 	/******************************Subtraction******************************/
 
-	public Reaction subtractBy(float subtrahend);
-	public Reaction subtractBy(Catalyst subtrahend);
-	public Reaction subtractBy(Reaction subtrahend);
+	public Fusion subtractBy(float subtrahend);
+	public Fusion subtractBy(Catalyst subtrahend);
+	public Fusion subtractBy(Fusion subtrahend);
+	
+	/******************************Other******************************/
+	
+	public Fusion negate();
 	
 }

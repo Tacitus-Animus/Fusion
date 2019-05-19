@@ -7,12 +7,12 @@ public abstract class Expression {
 	
 	private final LinkedList<Supplier<String>> expression = new LinkedList<>();
 	
-	private final Supplier<String> OPEN = () -> "( ";
-	private final Supplier<String> CLOSE = () -> " )";
-	private final Supplier<String> ADD = () -> " + ";
-	private final Supplier<String> SUBTRACT = () -> " - ";
-	private final Supplier<String> MULTIPLY = () -> " * ";
-	private final Supplier<String> DIVIDE = () -> " / ";
+	private static final Supplier<String> OPEN = () -> "(";
+	private static final Supplier<String> CLOSE = () -> ")";
+	private static final Supplier<String> ADD = () -> " + ";
+	private static final Supplier<String> SUBTRACT = () -> " - ";
+	private static final Supplier<String> MULTIPLY = () -> " * ";
+	private static final Supplier<String> DIVIDE = () -> " / ";
 	
 	private String representation;
 	protected boolean changed;
@@ -29,9 +29,8 @@ public abstract class Expression {
 			StringBuilder sb = new StringBuilder();
 			expression.forEach((supplier) -> sb.append(supplier.get()));
 			changed = false;
-			return sb.toString();
-		}
-		return representation;
+			return representation = sb.toString();
+		} else return representation;
 	}
 	
 	public Expression add(Supplier<String> addend) {
@@ -83,6 +82,14 @@ public abstract class Expression {
 		expression.addFirst(DIVIDE);
 		expression.addFirst(dividend);
 		expression.addFirst(OPEN);
+		expression.add(CLOSE);
+		changed = true;
+		return this;
+	}
+
+	public Expression negate() {
+		expression.addFirst(OPEN);
+		expression.addFirst(SUBTRACT);
 		expression.add(CLOSE);
 		changed = true;
 		return this;
