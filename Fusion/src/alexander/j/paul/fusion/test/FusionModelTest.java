@@ -1,7 +1,5 @@
 package alexander.j.paul.fusion.test;
 
-import alexander.j.paul.fusion.FusionTabDataTestModel;
-
 public class FusionModelTest {
 
 	public static void main(String[] args) {

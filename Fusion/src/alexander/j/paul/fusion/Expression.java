@@ -3,6 +3,14 @@ package alexander.j.paul.fusion;
 import java.util.LinkedList;
 import java.util.function.Supplier;
 
+/**
+ * An Expression that represents a mathematical expression.
+ * This supports lazy initialization with the use of Supplier.
+ * <p> This allows String values in the expression to be dynamically updated.
+ * <p> expression is build in Builder-Pattern type Fashion.
+ * @author Alexander Paul
+ *
+ */
 public abstract class Expression {
 	
 	private final LinkedList<Supplier<String>> expression = new LinkedList<>();
@@ -23,6 +31,13 @@ public abstract class Expression {
 		expression.add(initialValue);
 	}
 	
+	public boolean hasChanged() {
+		return changed;
+	}
+	
+	/**
+	 * Instead of looping every time, only loops if there is change.
+	 */
 	@Override
 	public String toString() {
 		if(changed) {

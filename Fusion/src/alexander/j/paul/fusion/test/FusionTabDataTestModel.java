@@ -1,4 +1,4 @@
-package alexander.j.paul.fusion;
+package alexander.j.paul.fusion.test;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -7,7 +7,16 @@ import alexander.j.paul.fusion.Catalyst;
 import alexander.j.paul.fusion.FloatCatalyst;
 import alexander.j.paul.fusion.FloatReactor;
 import alexander.j.paul.fusion.Fusion;
+import utils.Collections.Table;
 
+/**
+ * Tab Data Model which uses the Fusion API for Data Binding.
+ * <p> Dependent on the custom {@link Table} Data Structure for the individual, processed interpolation data.
+ * <p> Also Dependent on the {@link TabDataTables} which is comprised of all processed interpolation data
+ * that can be used to get reactive info.
+ * @author Alexander Paul
+ *
+ */
 public class FusionTabDataTestModel {
 	
 	//******************************String Formatting******************************\\
@@ -43,6 +52,7 @@ public class FusionTabDataTestModel {
 
 	//******************************Tab Data Suppliers******************************\\
 
+	public final String tabDataAlgorithm = "Tab Data Interpolation";
 	public final Supplier<Float> getIGE = () -> TabDataTables.get_q_ige_percent(atf.getValue(), pa.getValue(), temp.getValue());
 	public final Supplier<Float> getOGE = () -> TabDataTables.get_q_oge_percent(atf.getValue(), pa.getValue(), temp.getValue());
 	public final Supplier<Float> getMAX = () -> TabDataTables.get_max_q_percent(atf.getValue(), pa.getValue(), temp.getValue());
@@ -55,7 +65,6 @@ public class FusionTabDataTestModel {
 	 * <p> If true, then fusion based on {@link #findZFWeightReaction}. 
 	 */
 	public final Catalyst zfWieght = new FloatCatalyst("ZF Weight", 16000f, 0f, 22_000f)
-			//.formatWithFusion(FUSION_WEIGHT_FORMAT)
 			.formattedTo(POUND_FORMAT);
 
 	/**
@@ -70,7 +79,6 @@ public class FusionTabDataTestModel {
 	 * <p> else based on {@link #findWeightWithHoverReaction}.
 	 */
 	public final Catalyst totalWeight = new FloatReactor("Total Weight")
-			//.formatWithFusion(FUSION_WEIGHT_FORMAT)
 			.formattedTo(POUND_FORMAT);
 	
 	/**
@@ -80,13 +88,12 @@ public class FusionTabDataTestModel {
 	 */
 	public final Catalyst grossWeight = new FloatCatalyst("Gross Weight", 0f)
 			.formattedTo(POUND_FORMAT)
-			.fuse(getGW, atf, pa, temp);
+			.fuse(tabDataAlgorithm, getGW, atf, pa, temp);
 
 	/**
 	 * Fusion dependent on {@link #grossWeight} - {@link #totalWeight}.
 	 */
 	public final Catalyst ogeCapability = new FloatReactor("OGE Capability")
-			//.formatWithFusion(FUSION_WEIGHT_FORMAT)
 			.formattedTo(OGE_CAP_FORMAT)
 			.fuse(grossWeight.subtractBy(totalWeight));
 	
@@ -99,7 +106,7 @@ public class FusionTabDataTestModel {
 	 */
 	public final Catalyst q_ige_percent = new FloatReactor("Q ~ IGE")
 			.formattedTo(PERCENT_FORMAT)
-			.fuse(getIGE, atf, pa, temp);
+			.fuse(tabDataAlgorithm, getIGE, atf, pa, temp);
 	
 	/**
 	 * Fusion dependent on {@link #atf}, {@link #temp}, and {@link #pa}.
@@ -108,7 +115,7 @@ public class FusionTabDataTestModel {
 	 */
 	public final Catalyst q_oge_percent = new FloatReactor("Q ~ OGE")
 			.formattedTo(PERCENT_FORMAT)
-			.fuse(getOGE, atf, pa, temp);
+			.fuse(tabDataAlgorithm, getOGE, atf, pa, temp);
 	
 	/**
 	 * Fusion dependent on {@link #atf}, {@link #temp}, and {@link #pa}.
@@ -117,14 +124,13 @@ public class FusionTabDataTestModel {
 	 */
 	public final Catalyst max_q_percent = new FloatReactor("Max TRQ")
 			.formattedTo(PERCENT_FORMAT)
-			.fuse(getMAX, atf, pa, temp);
+			.fuse(tabDataAlgorithm, getMAX, atf, pa, temp);
 
 	/**
 	 * Can be changed by user depending on {@link #findHover} boolean. 
 	 * <p> If true, then fusion based on {@link #findHoverReaction}.
 	 */
 	public final Catalyst hoverPercent = new FloatCatalyst("Hover", 50f)
-			//.formatWithFusion(FUSION_PERCENT_FORMAT)
 			.formattedTo(PERCENT_FORMAT);
 
 	//******************************Dynamic Fusions******************************\\
@@ -173,8 +179,8 @@ public class FusionTabDataTestModel {
 	public void setFindHover() {
 		if(!findHover) {
 			findHover = true;
-			zfWieght.defuse();
-			totalWeight.defuse();
+			zfWieght.diffuse();
+			totalWeight.diffuse();
 
 			totalWeight.fuse(findWeightNormalReaction);
 			hoverPercent.fuse(findHoverReaction);
@@ -189,8 +195,8 @@ public class FusionTabDataTestModel {
 	public void setFindWeight() {
 		if(findHover) {
 			findHover = false;
-			hoverPercent.defuse();
-			totalWeight.defuse();
+			hoverPercent.diffuse();
+			totalWeight.diffuse();
 			
 			totalWeight.fuse(findWeightWithHoverReaction);
 			zfWieght.fuse(findZFWeightReaction);
@@ -245,11 +251,19 @@ public class FusionTabDataTestModel {
 	
 	//******************************Initialization******************************\\
 
+	/**
+	 * Singleton Pattern based on Effective Java, Josh Bloch.
+	 * @author Alexander Paul
+	 *
+	 */
 	private enum TabDataSingleton{
 		INSTANCE;
-		private FusionTabDataTestModel onlyInstance = new FusionTabDataTestModel();
+		private final FusionTabDataTestModel onlyInstance = new FusionTabDataTestModel();
 	}
 	
+	/**
+	 * Initialized in Find Hover Mode.
+	 */
 	private FusionTabDataTestModel() {
 		initialize();
 	}
@@ -263,6 +277,9 @@ public class FusionTabDataTestModel {
 		totalWeight.fuse(findWeightNormalReaction);
 		hoverPercent.fuse(findHoverReaction);
 	}
+	/**
+	 * @return only Instance of Tab Data Model.
+	 */
 	public static FusionTabDataTestModel get() {
 		return TabDataSingleton.INSTANCE.onlyInstance;
 	}
@@ -295,7 +312,6 @@ public class FusionTabDataTestModel {
 		data.append(zfWieght);
 		data.append(ln);
 		data.append(ogeCapability);
-		
 
 		return data.toString();
 	}

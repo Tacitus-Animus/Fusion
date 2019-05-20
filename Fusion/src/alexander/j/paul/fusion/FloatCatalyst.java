@@ -1,5 +1,14 @@
 package alexander.j.paul.fusion;
 
+/**
+ * Concrete implementation of the Fusion API.
+ * Represents an observable float value.
+ * <p> Allows direct change of its value or indirectly by fusing to other catalysts.
+ * <p> Min and Max Limitations may be set that keeps value within those limits.
+ * <p> Catalysts may be combined to other catalysts to create Fusions based on the Builder Pattern.
+ * @author Alexander Paul
+ *
+ */
 public class FloatCatalyst extends Catalyst implements Fusible {
 
 	private static final String NO_NAME = "";
@@ -37,7 +46,25 @@ public class FloatCatalyst extends Catalyst implements Fusible {
 		value = initialValue;
 	}
 	
-	/******************************Multiplication******************************/
+	//******************************Formative Implementation******************************\\
+	
+	@Override
+	public void setValue(float newValue) {
+		ifFusedThrowError();
+		value = newValue;
+		reactives.forEach(Reactive::react);
+		fireOnChangeEvent();
+	}
+	
+	@Override
+	public void setName(String newName) {
+		name = newName;
+	}
+	
+	//******************************Fusible Implementation******************************\\
+
+	
+	//******************************Multiplication******************************\\
 	
 	@Override
 	public Fusion multiply(float factor) {
@@ -54,7 +81,7 @@ public class FloatCatalyst extends Catalyst implements Fusible {
 		return factor.multiply(this);
 	}
 
-	/******************************Division******************************/
+	//******************************Division******************************\\
 
 	@Override
 	public Fusion divideBy(float divisor) {
@@ -72,7 +99,7 @@ public class FloatCatalyst extends Catalyst implements Fusible {
 
 	}
 
-	/******************************Addition******************************/
+	//******************************Addition******************************\\
 
 	@Override
 	public Fusion add(float addend) {
@@ -89,7 +116,7 @@ public class FloatCatalyst extends Catalyst implements Fusible {
 		return new Fusion(this).add(addend);
 	}
 
-	/******************************Subtraction******************************/
+	//******************************Subtraction******************************\\
 
 	@Override
 	public Fusion subtractBy(float subtrahend) {

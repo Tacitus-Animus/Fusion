@@ -24,7 +24,7 @@ public class FusionTest {
 		
 		assertTrue(!result.isFused());
 		
-		result.formatWithFusion("%s: %s = %.2f")
+		result.formattedWithFusion("%s: %s = %.2f")
 			  .formattedTo("%s: %.2f")
 			  .onChangeConsume(System.out::println)
 			  .fuse(equation);
@@ -32,7 +32,7 @@ public class FusionTest {
 		assertTrue(result.isFused());
 		assertTrue(result.getValue() == 68f);
 			
-		result.defuse();
+		result.diffuse();
 		
 		assertTrue(!result.isFused());
 		

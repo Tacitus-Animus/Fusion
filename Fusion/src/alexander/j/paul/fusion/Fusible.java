@@ -1,5 +1,12 @@
 package alexander.j.paul.fusion;
 
+/**
+ * Based on the builder pattern.
+ * This allows Fusible objects to combine into Fusions. 
+ * <p> It's heavily related to a mathematical equation.
+ * @author Alexander Paul
+ *
+ */
 public interface Fusible {
 
 	/******************************Multiplication******************************/

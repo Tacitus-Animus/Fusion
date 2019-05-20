@@ -21,7 +21,7 @@ public class FusionUITest {
 		final Catalyst result = new FloatReactor("Result");
 		
 		
-		result.formatWithFusion("%s: %s = %.2f")
+		result.formattedWithFusion("%s: %s = %.2f")
 			  .formattedTo("%s: %.2f")
 			  .fuse(equation);
 

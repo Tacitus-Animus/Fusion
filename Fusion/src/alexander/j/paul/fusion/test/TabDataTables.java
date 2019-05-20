@@ -1,4 +1,4 @@
-package alexander.j.paul.fusion;
+package alexander.j.paul.fusion.test;
 
 import utils.Collections.Table;
 

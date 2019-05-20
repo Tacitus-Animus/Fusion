@@ -1,5 +1,10 @@
 package alexander.j.paul.fusion;
 
+/**
+ * It's value cannot be directly changed with {@link #setValue(float)}, only by Fusing to other Catalysts.
+ * @author Alexander Paul
+ *
+ */
 public class FloatReactor extends FloatCatalyst {
 
 	public FloatReactor(String initialName) {
